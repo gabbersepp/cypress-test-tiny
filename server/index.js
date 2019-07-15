@@ -17,22 +17,14 @@ app.get("/", function(req, res) {
                     axios.get('/api/pathA').then((val) => {
                         alert("received: " + val.data);
                     });
-                    axios.get('/api/pathB').then((val) => {
-                        alert("received: " + val.data);
-                    });
                     alert("request sent");
                 }
 
                 axios.interceptors.request.use(function (config) {
-                    if (config.url.indexOf("/pathA")) {
-                        return {
-                            ...config,
-                            url: config.url + '?value=hereissometesttext',
-                          }
-                    } else {
-                        return config;
-                    }
-
+                    return {
+                        ...config,
+                        url: config.url + '?value=hereissometesttext',
+                      }
                   });
 
             </script>
@@ -44,9 +36,6 @@ app.get("/", function(req, res) {
 app.get('/api/pathA', function (req, res) {
   res.send(req.query.value);
 });
-app.get('/api/pathB', function (req, res) {
-    res.send(req.query.value);
-  });
 
 app.use(express.static('node_modules/axios/dist'));
 app.listen(3000, function () {
