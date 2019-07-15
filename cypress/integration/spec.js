@@ -1,20 +1,27 @@
-describe('page', () => {
-	
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var pathLength = 1000;
-   
-   var name1 = "";
-   var name2 = "";
-   
-   var fn = () => {
-	   var result = "";
-	   for(var i = 0; i < pathLength; i++) {
-		   result += characters.charAt(Math.floor(Math.random() * characters.length));
-	   }
-	   return result;
-   }
-   
-  it(fn(), () => { asert(false).toBe(true); })
-  
-  it(fn(), () => { asert(false).toBe(true); })
-})
+describe('the app', () => {
+
+  it('should call the correct endpoint', () => {
+
+    cy.server();
+
+    cy.route({
+      method: 'GET',
+      url: '/api/pathA?value=hereissometesttext',
+    }).as('getData');
+
+    cy.route({
+      method: 'GET',
+      url: '/api/pathB?value=hereissometesttext',
+    }).as('getData2');
+
+
+    cy.visit("http://localhost:3000");
+    cy.get("#btn").click();
+    cy.wait('@getData').then((xhr) => {
+      expect(xhr.url).to.equal('http://localhost:3000/api/pathA?value=hereissometesttext');
+    })
+    cy.wait('@getData2').then((xhr) => {
+      expect(xhr.url).to.equal('http://localhost:3000/api/pathB?value=hereissometesttext');
+    })
+  })
+});
